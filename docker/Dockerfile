@@ -17,7 +17,7 @@ RUN \
   apt-get install -y software-properties-common wget && \
   add-apt-repository ppa:savoury1/ffmpeg4 && \
   wget -O /usr/share/keyrings/gpg-pub-moritzbunkus.gpg https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg && \
-  echo "deb [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ focal main" | tee -a /etc/apt/sources.list && \
+  echo "deb [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ jammy main" | tee -a /etc/apt/sources.list && \
   wget ${mediainforepo} -O temp.deb && \
   dpkg -i temp.deb && \
   rm temp.deb && \
