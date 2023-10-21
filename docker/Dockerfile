@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-ARG mediainforepo="https://mediaarea.net/repo/deb/repo-mediaarea_1.0-19_all.deb"
+ARG mediainforepo="https://mediaarea.net/repo/deb/repo-mediaarea_1.0-21_all.deb"
 ARG dovitoollink="https://github.com/quietvoid/dovi_tool/releases/download/2.1.0/dovi_tool-2.1.0-x86_64-unknown-linux-musl.tar.gz"
 ARG hdr10plustoollink="https://github.com/quietvoid/hdr10plus_tool/releases/download/1.6.0/hdr10plus_tool-1.6.0-x86_64-unknown-linux-musl.tar.gz"
 ARG mp4boxlink="https://github.com/gpac/gpac.git"
@@ -39,8 +39,7 @@ RUN \
 RUN \
   printf "\n---Download hdr10plus_tool---\n\n" && \
   wget -O - ${hdr10plustoollink} | \
-  tar -zx -C /usr/local/bin/ && \
-  mv /usr/local/bin/dist/* /usr/local/bin/
+  tar -zx -C /usr/local/bin/
 
 # MP4BOX
 RUN \
