@@ -1,13 +1,10 @@
-FROM ubuntu:20.04
+FROM ubuntu:latest
 
 ARG mediainforepo="https://mediaarea.net/repo/deb/repo-mediaarea_1.0-19_all.deb"
-ARG dovitoollink="https://github.com/quietvoid/dovi_tool/releases/download/1.4.6/dovi_tool-1.4.6-x86_64-unknown-linux-musl.tar.gz"
-ARG hdr10plustoollink="https://github.com/quietvoid/hdr10plus_tool/releases/download/1.2.2/hdr10plus_tool-1.2.2-x86_64-unknown-linux-musl.tar.gz"
+ARG dovitoollink="https://github.com/quietvoid/dovi_tool/releases/download/2.1.0/dovi_tool-2.1.0-x86_64-unknown-linux-musl.tar.gz"
+ARG hdr10plustoollink="https://github.com/quietvoid/hdr10plus_tool/releases/download/1.6.0/hdr10plus_tool-1.6.0-x86_64-unknown-linux-musl.tar.gz"
 ARG mp4boxlink="https://github.com/gpac/gpac.git"
 ARG mp4boxtag="v1.0.1"
-ARG dotnetlink="https://download.visualstudio.microsoft.com/download/pr/48fbc600-8228-424e-aaed-52b7e601c277/c493b8ac4629341f1e5acc4ff515fead/dotnet-runtime-6.0.10-linux-x64.tar.gz"
-ARG pgs2srtlink="https://github.com/Tentacule/PgsToSrt/releases/download/v1.4.2/PgsToSrt-1.4.2.zip"
-ARG tesseractlink="https://github.com/tesseract-ocr/tessdata.git"
 
 COPY /dvmkv2mp4 /usr/local/bin
 
@@ -62,28 +59,6 @@ RUN \
   cd ../.. && \
   rm -Rf mp4box
 
-# PGS2SRT
-RUN \
-  printf "\n---Download dotnet runtime---\n\n" && \
-  mkdir /opt/dotnet && \
-  wget -O - ${dotnetlink} | \
-  tar -zx -C /opt/dotnet/ && \
-  printf "\n---Install tesseract and git---\n\n" && \
-  apt-get install -y libtesseract4 unzip git && \
-  printf "\n---Download pgs2srt---\n\n" && \
-  mkdir /opt/PgsToSrt && \
-  wget ${pgs2srtlink} -O temp.zip && \
-  unzip -d /opt/PgsToSrt/ temp.zip && \
-  rm temp.zip && \
-  printf "\n---Download tesseract models---\n\n" && \
-  cd /opt/PgsToSrt/net6 && \
-  git clone --depth 1 ${tesseractlink} && \
-  printf "\n---Uninstall unzip and git and cleanup apt cache---\n\n" && \
-  apt-get purge -y software-properties-common build-essential pkg-config git zlib1g-dev unzip git && \
-  apt-get autoremove -y && \
-  rm -rf \ 
-    /var/lib/apt/lists/* \
-    /var/tmp/*
 
 RUN \
   printf "\n---Create \"convert\" directory for volume attachment---\n\n" && \

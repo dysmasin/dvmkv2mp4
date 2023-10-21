@@ -81,22 +81,7 @@ function processsubs {
     # COPY EXISTING SRT
     for i in "$inputbase".*.srt; do 
         eval "cp \"$i\" \"`echo "$i" | $sed 's/\ DV\.\|\ HDR10+\.\|HDR\./\./g' | $sed 's/\.\(.*\)\.srt/\ DV-MP4\.\1\.srt/g'`\"";
-    done
-    # CONVERT PGS 2 SRT
-    if [ -s "sub.exports" ] && [ "$(cat sub.exports | grep hdmv_pgs)" != "" ]; then
-      while read i;do
-        stream=`echo "$i" | cut -f1 -d\|`
-        id=`echo "$i" | cut -f2 -d\|`
-        codec=`echo "$i" | cut -f3 -d\|`
-        orig_codec=`echo "$i" | cut -f4 -d\|`
-        delay=`echo "$i" | cut -f5 -d\|`
-        lang=`echo "$i" | cut -f6 -d\|`
-        title=`echo "$i" | cut -f7 -d\|`
-        /opt/dotnet/dotnet /opt/PgsToSrt/net6/PgsToSrt.dll --input "$stream" --output "${stream%.sup}.srt" --tesseractlanguage=$lang
-        echo "${stream%.sup}.srt|$id|srt|$orig_codec|$delay|$lang|$title" >> sub.exports
-        #docker run --rm -v "`pwd`":/data -e INPUT="/data/$stream" -e OUTPUT="/data/${stream%.sup}.srt" -e LANGUAGE=$lang tentacule/pgstosrt
-      done <<< "$(cat sub.exports | grep hdmv_pgs)"
-    fi
+    done    
 }
 
 start=`date +%s`
@@ -222,7 +207,7 @@ EOF
     title="${title//[\"\',\`]/}"
     ffopts=""
     if [ "$orig_codec" == "truehd" ]; then
-      ffopts="-map 0:$id -b:a:0 1024k -c:a:0 eac3 -f eac3 $id.$lang.eac3"
+      ffopts="-map 0:$id -c:a:0 copy $id.$lang.eac3"
       echo "$id.$lang.eac3|$id|eac3|$orig_codec|$delay|$lang|$title" >> audio.exports
     fi
     if [ "$orig_codec" == "eac3" ]; then
@@ -230,9 +215,9 @@ EOF
       echo "$id.$lang.eac3|$id|eac3|$orig_codec|$delay|$lang|$title" >> audio.exports
     fi
     if [ "$orig_codec" == "dts" ]; then
-      ffopts="-map 0:$id -b:a:0 1024k -c:a:0 eac3 -f eac3 $id.$lang.eac3"
-      echo "$id.$lang.eac3|$id|eac3|$orig_codec|$delay|$lang|$title" >> audio.exports
-    fi
+          ffopts="-map 0:$id -c:a:0 copy $id.$lang.dts"
+          echo "$id.$lang.dts|$id|dts|$orig_codec|$delay|$lang|$title" >> audio.exports
+    fi   
     if [ "$orig_codec" == "ac3" ]; then
       ffopts="-map 0:$id -c:a:0 copy $id.$lang.ac3"
       echo "$id.$lang.ac3|$id|ac3|$orig_codec|$delay|$lang|$title" >> audio.exports
