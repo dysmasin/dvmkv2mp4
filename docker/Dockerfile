@@ -4,7 +4,7 @@ ARG mediainforepo="https://mediaarea.net/repo/deb/repo-mediaarea_1.0-21_all.deb"
 ARG dovitoollink="https://github.com/quietvoid/dovi_tool/releases/download/2.1.0/dovi_tool-2.1.0-x86_64-unknown-linux-musl.tar.gz"
 ARG hdr10plustoollink="https://github.com/quietvoid/hdr10plus_tool/releases/download/1.6.0/hdr10plus_tool-1.6.0-x86_64-unknown-linux-musl.tar.gz"
 ARG mp4boxlink="https://github.com/gpac/gpac.git"
-ARG mp4boxtag="v1.0.1"
+ARG mp4boxtag="v2.2.1"
 
 COPY /dvmkv2mp4 /usr/local/bin
 
