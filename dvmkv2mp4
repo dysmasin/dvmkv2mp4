@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=0.3.0-dev
+VERSION=0.4.0-dev
 
 ## Which Languages of Audio and Sub tracks to keep in resulting mp4, if no match then all will be kept
 LANGS="ALL"
@@ -60,9 +60,9 @@ while true; do
 done
 
 function cleanup {
-  while read i;do
-    rm "`echo "$i" | cut -f1 -d\|`"
-  done <<< "$(cat audio.exports)"
+  while read -r i; do
+    rm "$(echo "$i" | cut -f1 -d\|)"
+  done < audio.exports
   rm RPU.bin extra.json hdr10plus_metadata.json
   rm audio.exports
   rm sub.exports
@@ -76,18 +76,17 @@ function cleanup {
 }
 
 function processsubs {
-    ### PROCESS SUBS
-    inputbase=${input%.mkv}
+    local inputbase=${input%.mkv}
     # COPY EXISTING SRT
     for i in "$inputbase".*.srt; do 
-        eval "cp \"$i\" \"`echo "$i" | $sed 's/\ DV\.\|\ HDR10+\.\|HDR\./\./g' | $sed 's/\.\(.*\)\.srt/\ DV-MP4\.\1\.srt/g'`\"";
+        cp "$i" "$(echo "$i" | $sed 's/\ DV\.\|\ HDR10+\.\|HDR\./\./g' | $sed 's/\.\(.*\)\.srt/\ DV-MP4\.\1\.srt/g')"
     done    
 }
 
-start=`date +%s`
+start=$(date +%s)
 echo "$HEADER"
-echo "Starting Conversions `date`"
-for f in *.mkv;do
+echo "Starting Conversions $(date)"
+for f in *.mkv; do
   input="$f"
   ffstart5_8="$ionc ffmpeg -i \"$input\" -y -loglevel error -stats -map 0:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc BL_RPU.hevc"
   ffstart7_1="$ionc ffmpeg -i \"$input\" -y -loglevel error -stats -map 0:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc -"
@@ -98,7 +97,7 @@ for f in *.mkv;do
   ffendhdr10plus="| $ionc hdr10plus_tool extract -o hdr10plus_metadata.json -"
   dv=$(mediainfo "$input" | grep 'HDR format.*Dolby Vision')
   hdr10plus=$(mediainfo "$input" | grep 'HDR format.*HDR10+')
-  output=`echo "$input" | $sed 's/\ DV.mkv\|\ HDR10+.mkv\|\ HDR.mkv/.mkv/g' | $sed s/\.mkv/\ DV-MP4\.mkv/g`
+  output=$(echo "$input" | $sed 's/\ DV.mkv\|\ HDR10+.mkv\|\ HDR.mkv/.mkv/g' | $sed s/\.mkv/\ DV-MP4\.mkv/g)
   output="${output%.mkv}"
 
   ## AUTODETECT SOURCE TYPE AND CONSTRUCT FFMPEG
@@ -177,8 +176,8 @@ EOF
     fi
   fi
   # SELECT LANG TRACKS
-  as=$(ffprobe -loglevel error -select_streams a -show_entries stream=type:stream=codec_name:stream=index:stream=start_pts:stream_tags=language:stream_tags=title -of csv=p=0 "$input" | grep $(echo $LANGS | $sed 's/,/,\\|,/g') | $sed 's/,/\|/g')
-  if [ "$as" == "" ]; then
+  as=$(ffprobe -loglevel error -select_streams a -show_entries stream=type:stream=codec_name:stream=index:stream=start_pts:stream_tags=language:stream_tags=title -of csv=p=0 "$input" | grep "$(echo $LANGS | $sed 's/,/,\\|,/g')" | $sed 's/,/\|/g')
+  if [ -z "$as" ]; then
     ffprobe -loglevel error -select_streams a -show_entries stream=type:stream=codec_name:stream=index:stream=start_pts:stream_tags=language:stream_tags=title -of csv=p=0 "$input" | $sed 's/,/\|/g' > tracks.list
   else
     echo "$as" > tracks.list
@@ -191,11 +190,11 @@ EOF
   fi
   
   # FFMPEG PROCESS TRACKS
-  while read i;do
-    id=`echo "$i" | cut -f1 -d\|`
-    orig_codec=`echo "$i" | cut -f2 -d\|`
-    delay=`echo "$i" | cut -f3 -d\|`
-    lang=`echo "$i" | cut -f4 -d\|`
+  while read -r i; do
+    id=$(echo "$i" | cut -f1 -d\|)
+    orig_codec=$(echo "$i" | cut -f2 -d\|)
+    delay=$(echo "$i" | cut -f3 -d\|)
+    lang=$(echo "$i" | cut -f4 -d\|)
     # cover case of missing lang metadata
     valid="[a-za-za-z]"
     if [[ ! $lang =~ $valid ]]; then 
@@ -244,7 +243,7 @@ EOF
       echo "$output.${lang}${id}.sup|$id|hdmv_pgs_subtitles|$orig_codec|$delay|$lang|$title" >> sub.exports
     fi
     ffstring+=($ffopts)
-  done <<< "$(cat tracks.list)"
+  done < tracks.list
   
   if [ $ASM == "yes" ]; then
     # FFMPEG TRACKS FOR ASM
@@ -314,18 +313,18 @@ EOF
   ### MUX MP4
   mp4string=("$ionc MP4Box -add BL_RPU.hevc:dv-profile=$dv_target")
   tcount=2
-  while read i;do
-    stream=`echo "$i" | cut -f1 -d\|`
-    id=`echo "$i" | cut -f2 -d\|`
-    codec=`echo "$i" | cut -f3 -d\|`
-    orig_codec=`echo "$i" | cut -f4 -d\|`
-    delay=`echo "$i" | cut -f5 -d\|`
-    lang=`echo "$i" | cut -f6 -d\|`
-    title=`echo "$i" | cut -f7 -d\|`
+  while read -r i; do
+    stream=$(echo "$i" | cut -f1 -d\|)
+    id=$(echo "$i" | cut -f2 -d\|)
+    codec=$(echo "$i" | cut -f3 -d\|)
+    orig_codec=$(echo "$i" | cut -f4 -d\|)
+    delay=$(echo "$i" | cut -f5 -d\|)
+    lang=$(echo "$i" | cut -f6 -d\|)
+    title=$(echo "$i" | cut -f7 -d\|)
     mp4opts="-add \"$stream\":sopt:gfreg=ffdmx -lang $tcount=$lang -name $tcount=\"$title\" -delay $tcount=$delay"
     mp4string+=($mp4opts)
     tcount=$((tcount+1))
-  done <<< "$(cat audio.exports)"
+  done < audio.exports
   if [ $ADDSUBS == "yes" ]; then
     while read i;do
       stream=`echo "$i" | cut -f1 -d\|`
@@ -368,7 +367,7 @@ EOF
     rm "${input}.dvconverting"
   fi 
 done
-end=`date +%s`
+end=$(date +%s)
 runtime=$((end-start))
 hours=$((runtime / 3600)); minutes=$(( (runtime % 3600) / 60 )); seconds=$(( (runtime % 3600) % 60 )); 
 echo "Conversions runtime: $hours:$minutes:$seconds (hh:mm:ss)"
