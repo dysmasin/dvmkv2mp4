@@ -2,7 +2,7 @@
 
 This fork works with newest Gpac / MP4Box 2.2.x.
 - Removed PGS2SRT functionality
-- All sound tracks are copies as they are. Added newer Dolby Atmos logic and TrueHD copying with Dolby Atmos data. While you still need external device to have TrueHD you can let LG OLED to convert it to DD+ with spatial data, presumably (still testing).
+- All sound tracks are copied as they are. Added newer Dolby Atmos logic and TrueHD copying with Dolby Atmos data. While you still need external device to have TrueHD you can let LG OLED to convert it to DD+ with spatial data, presumably (still testing).
 - Same goes for DTS and DTS-HD 
 
 ## Build Docker image
