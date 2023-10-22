@@ -1,8 +1,9 @@
 # dvmkv2mp4 - Convert any Dolby Vision/HDR10+ MKV to MP4 that runs on many devices
 
 This fork works with newest Gpac / MP4Box 2.2.x.
-Removed PGS2SRT functionality
-All sound tracks are copies as they are. Added newer Dolby Atmos logic and TrueHD copying with Dolby Atmos data. While you still need external device to have TrueHD you can let LG OLED to convert it to DD+ with spatial data, presumably (still testing). Same goes for DTS and DTS-HD 
+- Removed PGS2SRT functionality
+- All sound tracks are copies as they are. Added newer Dolby Atmos logic and TrueHD copying with Dolby Atmos data. While you still need external device to have TrueHD you can let LG OLED to convert it to DD+ with spatial data, presumably (still testing).
+- Same goes for DTS and DTS-HD 
 
 ## Build Docker image
 Currently the image works only on x64 Linux. Also note that the final image size will be close to 6 GB which is normal as it includes the Tesseract OCR models.
