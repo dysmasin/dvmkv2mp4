@@ -17,7 +17,7 @@ then
   ionc="ionice --low"
   sed="gsed"
 else
-  ionc="ionice -c 3"
+  ionc="ionice -c 2 -n 4"
   sed="sed"
 fi
 
@@ -298,8 +298,9 @@ EOF
     MetadataPercent=`bc <<< "scale=2; $MetadataCount/$FrameCount * 100"`
     MetadataPercent=${MetadataPercent%.*}
     if [ "$MetadataPercent" -gt 95 ]; then 
-      echo "Metadata seems ok proceeding"
-      $ionc dovi_tool generate -j extra.json --hdr10plus-json hdr10plus_metadata.json -o RPU.bin
+      echo "Metadata seems ok proceeding"      
+      #$ionc dovi_tool generate -j extra.json --hdr10plus-json hdr10plus_metadata.json -o RPU.bin
+      ionc dovi_tool generate -j assets/generator_examples/default_cmv40.json --use-custom-targets input%.bin --madvr-file input%.bin -o RPU.bin
       $ionc dovi_tool inject-rpu -i BL.hevc --rpu-in RPU.bin -o BL_RPU.hevc
       rm BL.hevc
     else 

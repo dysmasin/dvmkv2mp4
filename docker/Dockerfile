@@ -14,7 +14,7 @@ RUN chmod a+x /usr/local/bin/dvmkv2mp4
 RUN \
   printf "\n---Install mediainfo mkvtoolnix ffmpeg and wget---\n\n" && \
   apt-get update && \
-  apt-get dist-upgrade && \
+  apt-get dist-upgrade -y && \
   apt-get install -y software-properties-common wget && \
   add-apt-repository ppa:savoury1/ffmpeg4 && \
   wget -O /usr/share/keyrings/gpg-pub-moritzbunkus.gpg https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg && \
