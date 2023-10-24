@@ -94,7 +94,7 @@ for f in *.mkv; do
   ffend7_1="| $ionc dovi_tool -m 2 convert --discard -"
   ffend7_2="| $ionc dovi_tool -m 2 extract-rpu - -o RPU.bin"
   ffstarthdr10plus="$ionc ffmpeg -i \"$input\" -y -loglevel error -stats -map 0:v:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc BL.hevc -map 0:v:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc -"
-  ffendhdr10plus="| $ionc hdr10plus_tool extract -o hdr10plus_metadata.json -"
+  #ffendhdr10plus="| $ionc hdr10plus_tool extract -o hdr10plus_metadata.json -"
   dv=$(mediainfo "$input" | grep 'HDR format.*Dolby Vision')
   hdr10plus=$(mediainfo "$input" | grep 'HDR format.*HDR10+')
   output=$(echo "$input" | $sed 's/\ DV.mkv\|\ HDR10+.mkv\|\ HDR.mkv/.mkv/g' | $sed s/\.mkv/\ DV-MP4\.mkv/g)
@@ -286,8 +286,8 @@ EOF
     processsubs
   elif [ ! -z "$hdr10plus" ]; then
     # HANDLE HDR10+ METADATA
-    ffstring+=("$ffendhdr10plus")
-    echo ${ffstring[*]}
+    #ffstring+=("$ffendhdr10plus")
+    #echo ${ffstring[*]}
     eval ${ffstring[*]}
 
     ### PROCESS SUBS
@@ -300,7 +300,7 @@ EOF
     if [ "$MetadataPercent" -gt 95 ]; then 
       echo "Metadata seems ok proceeding"      
       #$ionc dovi_tool generate -j extra.json --hdr10plus-json hdr10plus_metadata.json -o RPU.bin
-      ionc dovi_tool generate -j assets/generator_examples/default_cmv40.json --use-custom-targets input%.bin --madvr-file input%.bin -o RPU.bin
+      $ionc dovi_tool generate -j assets/generator_examples/default_cmv40.json --use-custom-targets ${input}.measurements --madvr-file ${input}.measurements -o RPU.bin
       $ionc dovi_tool inject-rpu -i BL.hevc --rpu-in RPU.bin -o BL_RPU.hevc
       rm BL.hevc
     else 
