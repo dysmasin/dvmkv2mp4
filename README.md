@@ -12,7 +12,7 @@ Currently the image works only on x64 Linux. Also note that the final image size
 
 To build your Docker image run the following command:
 ```
-docker build -t dvmkv2mp4  https://github.com/tinof/dvmkv2mp4.git#main -f docker/Dockerfile
+docker build -t dvmkv2mp4  https://github.com/dysmasin/dvmkv2mp4.git#main -f docker/Dockerfile
 ```
 ## Use the Docker image
 The usage is similar to the normal variant but here you need to attach your folder where you would like to convert your files. You can also add the flags at the end of the command.
