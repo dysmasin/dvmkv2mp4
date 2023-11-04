@@ -293,7 +293,7 @@ EOF
     eval ${ffstring[*]}
 
     ### PROCESS SUBS
-    processsubs
+    ### processsubs ### Not needed since we only change the file extension
 
     ### VERIFY HDR10+ METADATA
     MetadataCount=`cat hdr10plus_metadata.json | jq -r '.SceneInfo | length'`
