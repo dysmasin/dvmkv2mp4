@@ -71,6 +71,7 @@ function cleanup {
   rm chapters.list
   rm BL*hevc
   rm "${input}.dvconverting"
+  rm "$input"
   if [ $REMOVESOURCE == "yes" ]; then
     rm "/convert/${input}"
   fi
