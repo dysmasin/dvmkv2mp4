@@ -72,7 +72,6 @@ function cleanup {
   rm BL*hevc
   rm "${input}.dvconverting"
   rm "$input"
-  rd -r /tmp
   if [ $REMOVESOURCE == "yes" ]; then
     rm "/convert/${input}"
   fi
