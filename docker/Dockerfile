@@ -78,7 +78,6 @@ RUN \
 
 VOLUME ["cache"]
 
-
 WORKDIR /convert
 
 ENTRYPOINT ["dvmkv2mp4"]
