@@ -67,12 +67,6 @@ RUN \
 VOLUME ["/convert"]
 
 RUN \
-  printf "\n---Create \".gpac\" directory for volume attachment---\n\n" && \
-  mkdir /.gpac
-
-VOLUME ["./gpac"]
-
-RUN \
   printf "\n---Create \"cache\" directory for volume attachment---\n\n" && \
   mkdir /cache
 
