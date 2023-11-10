@@ -109,7 +109,7 @@ for f in *.mkv; do
     echo "Not an HDR10+ nor DV source or already converting"
     continue
   else
-    echo "${input} to /cache"
+    echo "Copying ${input} to /cache"
     cp $input /cache
     echo "Setting working directory to /cache"
     cd /cache
