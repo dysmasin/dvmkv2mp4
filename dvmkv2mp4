@@ -110,7 +110,7 @@ for f in *.mkv; do
     continue
   else
     echo "Copying ${input} to /cache"
-    cp $input /cache
+    cp "$input" /cache
     echo "Setting working directory to /cache"
     cd /cache
     touch "${input}.dvconverting"
