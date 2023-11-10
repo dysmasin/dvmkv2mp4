@@ -48,6 +48,7 @@ RUN \
   apt-get install -y build-essential pkg-config git && \
   apt-get install -y zlib1g-dev && \
   printf "\n---Build mp4box---\n\n" && \
+  mkdir /.gpac && \
   mkdir mp4box && \
   cd mp4box && \
   git clone --depth 1 --branch ${mp4boxtag} ${mp4boxlink} gpac_public && \
