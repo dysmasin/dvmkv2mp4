@@ -103,7 +103,8 @@ for f in *.mkv; do
   fps="`ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=nw=1:nk=1 "$input"`"
   
   ## AUTODETECT SOURCE TYPE AND CONSTRUCT FFMPEG
-  if [ -z "$hdr10plus" ] && [ -z "$dv" ] || [ -f "${input}.dvconverting" ]; then
+  ## if [ -z "$hdr10plus" ] && [ -z "$dv" ] || [ -f "${input}.dvconverting" ]; then
+  if [ -z "$dv" ] || [ -f "${input}.dvconverting" ]; then
     echo "Not an HDR10+ nor DV source or already converting"
     continue
   else
