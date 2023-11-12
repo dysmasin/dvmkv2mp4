@@ -60,7 +60,6 @@ while true; do
 done
 
 function cleanup {
-  cd /cache
   while read -r i; do
     rm "$(echo "$i" | cut -f1 -d\|)"
   done < audio.exports
@@ -69,11 +68,11 @@ function cleanup {
   rm sub.exports
   rm tracks.list
   rm chapters.list
-  rm BL*hevc
+  rm /cache/BL*hevc
   rm "${input}.dvconverting"
   rm "$input"
   if [ $REMOVESOURCE == "yes" ]; then
-    rm "/convert/${input}"
+    rm "${input}"
   fi
 }
 
@@ -90,7 +89,7 @@ echo "$HEADER"
 echo "Starting Conversions $(date)"
 for f in *.mkv; do
   input="$f"
-  ffstart5_8="$ionc ffmpeg -i \"$input\" -y -loglevel error -stats -map 0:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc BL_RPU.hevc"
+  ffstart5_8="$ionc ffmpeg -i \"$input\" -y -loglevel error -stats -map 0:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc /cache/BL_RPU.hevc"
   ffstart7_1="$ionc ffmpeg -i \"$input\" -y -loglevel error -stats -map 0:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc -"
   ffstart7_2="$ionc ffmpeg -i \"$input\" -y -loglevel error -stats -map 0:v:0 -c:v copy -vbsf hevc_mp4toannexb -f hevc BL.hevc -map 0:v:1 -c:v copy -vbsf hevc_mp4toannexb -f hevc -"
   ffend7_1="| $ionc dovi_tool -m 2 convert --discard -"
@@ -110,10 +109,6 @@ for f in *.mkv; do
     echo "Not an HDR10+ nor DV source or already converting"
     continue
   else
-    echo "Copying ${input} to /cache"
-    cp "$input" /cache
-    echo "Setting working directory to /cache"
-    cd /cache
     touch "${input}.dvconverting"
     if [ ! -z "$dv" ]; then
       dv_profile=$(mediainfo "$input" | grep "HDR format.*dvhe\." | $sed 's/.*dvhe\.0\(.\).*/\1/')
@@ -285,7 +280,7 @@ EOF
       ffstring+=("$ffend7_2")
       echo ${ffstring[*]}
       eval ${ffstring[*]}
-      $ionc dovi_tool inject-rpu -i BL.hevc --rpu-in RPU.bin -o BL_RPU.hevc
+      $ionc dovi_tool inject-rpu -i BL.hevc --rpu-in RPU.bin -o /cache/BL_RPU.hevc
       rm BL.hevc RPU.bin
     else
       echo ${ffstring[*]}
@@ -310,7 +305,7 @@ EOF
       echo "Metadata seems ok proceeding"      
       #$ionc dovi_tool generate -j extra.json --hdr10plus-json hdr10plus_metadata.json -o RPU.bin
       $ionc dovi_tool generate -j assets/generator_examples/default_cmv40.json --madvr-file ${input}.measurements -o RPU.bin
-      $ionc dovi_tool inject-rpu -i BL.hevc --rpu-in RPU.bin -o BL_RPU.hevc
+      $ionc dovi_tool inject-rpu -i BL.hevc --rpu-in RPU.bin -o /cache/BL_RPU.hevc
       rm BL.hevc
     else 
       echo "Invalid HDR10+ Metadata ABORTING"
@@ -331,8 +326,8 @@ EOF
   mkvextract chapters -s "${input}" > chapters.list
   
   ### MUX MP4
-  #mp4string=("$ionc MP4Box -add BL_RPU.hevc:dvp=$dv_target")
-  mp4string=("$ionc MP4Box -add BL_RPU.hevc:dvp=${dv_target}:fps=${fps}")
+  #mp4string=("$ionc MP4Box -add /cache/BL_RPU.hevc:dvp=$dv_target")
+  mp4string=("$ionc MP4Box -add /cache/BL_RPU.hevc:dvp=${dv_target}:fps=${fps}")
   tcount=2
   while read -r i; do
     stream=$(echo "$i" | cut -f1 -d\|)
@@ -386,7 +381,7 @@ EOF
   if [ -s "chapters.list" ]; then
     mp4string+=("-chap chapters.list")
   fi
-  mp4string+=("-tmp ./tmp -brand mp42isom -ab dby1 \"$output.mp4\"")
+  mp4string+=("-tmp /cache/tmp -brand mp42isom -ab dby1 \"$output.mp4\"")
   echo ${mp4string[*]}
   eval ${mp4string[*]}
   if [ $DEBUG != "yes" ]; then
