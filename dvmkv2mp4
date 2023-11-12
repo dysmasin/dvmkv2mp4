@@ -70,7 +70,6 @@ function cleanup {
   rm chapters.list
   rm /cache/BL*hevc
   rm "${input}.dvconverting"
-  rm "$input"
   if [ $REMOVESOURCE == "yes" ]; then
     rm "${input}"
   fi
