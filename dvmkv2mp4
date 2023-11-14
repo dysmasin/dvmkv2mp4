@@ -105,6 +105,7 @@ for f in *.mkv; do
   ## AUTODETECT SOURCE TYPE AND CONSTRUCT FFMPEG
   ## if [ -z "$hdr10plus" ] && [ -z "$dv" ] || [ -f "${input}.dvconverting" ]; then
   if [ -z "$dv" ] || [ -f "${input}.dvconverting" ]; then
+    echo "$dv"
     echo "Not an HDR10+ nor DV source or already converting"
     continue
   else
