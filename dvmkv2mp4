@@ -380,7 +380,7 @@ EOF
   if [ -s "chapters.list" ]; then
     mp4string+=("-chap chapters.list")
   fi
-  mp4string+=("-tmp /cache/tmp -brand mp42isom -ab dby1 \"$output.mp4\"")
+  mp4string+=("-cred=/cache/cred.key -tmp /cache/tmp -brand mp42isom -ab dby1 \"$output.mp4\"")
   echo ${mp4string[*]}
   eval ${mp4string[*]}
   if [ $DEBUG != "yes" ]; then
